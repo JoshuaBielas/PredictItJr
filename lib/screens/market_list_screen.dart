@@ -19,6 +19,7 @@ class _MarketListScreenState extends State<MarketListScreen> {
     _marketsFuture = MarketRepository().loadAll();
   }
 
+  // I got help from AI for this code.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

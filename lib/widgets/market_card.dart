@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:predictit_jr/utils/formatters.dart';
 import '../models/market.dart';
 
+// I got help from AI for this code.
+
 class MarketCard extends StatelessWidget {
   final Market market;
 
