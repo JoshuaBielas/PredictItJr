@@ -14,7 +14,7 @@ dependencies:
   flutter_svg: ^2.0.10    # SVG support for market images (used from A1)
 
   # Added in A3 (Navigation)
-  # go_router: ^14.0.0
+  go_router: ^14.0.0
 
   # Added in A4 (Provider)
   # provider: ^6.1.0
@@ -28,7 +28,7 @@ dependencies:
   # permission_handler: ^11.3.0
 
   # Optional, for A3 price-history chart
-  # fl_chart: ^0.69.0
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
