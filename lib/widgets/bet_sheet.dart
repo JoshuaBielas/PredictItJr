@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import '../models/bet.dart';
 import '../models/market.dart';
 import '../utils/formatters.dart';
+import 'package:provider/provider.dart';
+import '../providers/portfolio_model.dart';
 
 // I got help from AI for this
 
@@ -104,7 +106,16 @@ class _BetSheetState extends State<BetSheet> {
                           pricePaidCents: price,
                           placedAt: DateTime.now(),
                         );
-                        print('Placed bet: ${bet.toJson()}');
+                        final ok = context.read<PortfolioModel>().placeBet(bet);
+                        if (!ok) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Not enough cash'),
+                            ),
+                          );
+                          return;
+                        }
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

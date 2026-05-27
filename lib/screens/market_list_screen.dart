@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../data/market_repository.dart';
 import '../models/market.dart';
 import '../widgets/market_card.dart';
+
 
 class MarketListScreen extends StatefulWidget {
   const MarketListScreen({super.key});
@@ -23,7 +25,15 @@ class _MarketListScreenState extends State<MarketListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Markets')),
+      appBar: AppBar(
+        title: const Text('Markets'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_balance_wallet),
+            onPressed: () => context.push('/portfolio'),
+          ),
+        ],
+      ),
       body: FutureBuilder<List<Market>>(
         future: _marketsFuture,
         builder: (context, snapshot) {

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:predictit_jr/screens/portfolio_screen.dart';
 import 'screens/market_list_screen.dart';
 import 'screens/market_detail_screen.dart';
 
@@ -17,6 +18,10 @@ final GoRouter router = GoRouter(
       builder: (context, state) => MarketDetailScreen(
         id: state.pathParameters['id']!,
       ),
+    ),
+    GoRoute(
+      path: '/portfolio',
+      builder: (_, __) => const PortfolioScreen(),
     ),
   ],
 );
