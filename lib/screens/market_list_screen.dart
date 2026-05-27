@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:predictit_jr/widgets/adaptive_shell.dart';
 import '../data/market_repository.dart';
 import '../models/market.dart';
 import '../widgets/market_card.dart';
+import '../widgets/market_detail.dart';
 
 
 class MarketListScreen extends StatefulWidget {
@@ -10,6 +11,52 @@ class MarketListScreen extends StatefulWidget {
 
   @override
   State<MarketListScreen> createState() => _MarketListScreenState();
+}
+
+class _WideMarketLayout extends StatefulWidget {
+  const _WideMarketLayout({required this.markets});
+
+  final List<Market> markets;
+
+  @override
+  State<_WideMarketLayout> createState() => _WideMarketLayoutState();
+}
+
+class _WideMarketLayoutState extends State<_WideMarketLayout> {
+  Market? _selectedMarket;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: ListView.builder(
+            itemCount: widget.markets.length,
+            itemBuilder: (context, i) {
+              final market = widget.markets[i];
+
+              return MarketCard(
+                market: market,
+                onTap: () {
+                  setState(() {
+                    _selectedMarket = market;
+                  });
+                },
+              );
+            },
+          ),
+        ),
+        const VerticalDivider(width: 1),
+        Expanded(
+          flex: 3,
+          child: _selectedMarket == null
+              ? const Center(child: Text('Select a market'))
+              : MarketDetailBody(market: _selectedMarket!),
+        ),
+      ],
+    );
+  }
 }
 
 class _MarketListScreenState extends State<MarketListScreen> {
@@ -27,12 +74,6 @@ class _MarketListScreenState extends State<MarketListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Markets'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_balance_wallet),
-            onPressed: () => context.push('/portfolio'),
-          ),
-        ],
       ),
       body: FutureBuilder<List<Market>>(
         future: _marketsFuture,
@@ -44,6 +85,7 @@ class _MarketListScreenState extends State<MarketListScreen> {
             return Center(child: Text('Failed to load: ${snapshot.error}'));
           }
           final markets = snapshot.data!;
+          final wide = MediaQuery.sizeOf(context).width >= kWideBreakpoint;
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
@@ -51,12 +93,14 @@ class _MarketListScreenState extends State<MarketListScreen> {
               });
               await _marketsFuture;
             },
-            child: ListView.builder(
-              itemCount: markets.length,
-              itemBuilder: (context, i) {
-                final market = markets[i];
-                return MarketCard(market: market);
-              },
+            child: wide
+              ? _WideMarketLayout(markets: markets)
+              : ListView.builder(
+                itemCount: markets.length,
+                itemBuilder: (context, i) {
+                  final market = markets[i];
+                  return MarketCard(market: market);
+                },
             ),
           );
         },

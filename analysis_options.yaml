@@ -16,7 +16,7 @@ linter:
     # Type discipline — important coming from Python
     always_declare_return_types: true
     always_specify_types: false  # too aggressive; type inference is fine
-    avoid_dynamic_calls_without_null_check: true
+    # avoid_dynamic_calls_without_null_check: true
     prefer_final_locals: true
     prefer_final_fields: true
 

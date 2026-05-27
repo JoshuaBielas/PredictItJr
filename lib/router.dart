@@ -1,27 +1,44 @@
+// import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:predictit_jr/screens/portfolio_screen.dart';
 import 'screens/market_list_screen.dart';
 import 'screens/market_detail_screen.dart';
+import 'screens/portfolio_screen.dart';
+import 'screens/profile_screen.dart';
+import 'widgets/adaptive_shell.dart';
 
-// Routes carry STRINGS, not Dart objects. The detail route takes an
-// id (a path parameter) and the screen looks the market up itself.
-// This is what makes deep links, refreshes, and A7's redirects possible.
-// — passing the whole Market object "because it's handy" defeats it.
+// I got help from AI on this
+
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const MarketListScreen(),
-    ),
-    GoRoute(
-      path: '/market/:id',
-      builder: (context, state) => MarketDetailScreen(
-        id: state.pathParameters['id']!,
-      ),
-    ),
-    GoRoute(
-      path: '/portfolio',
-      builder: (_, __) => const PortfolioScreen(),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return AdaptiveShell(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const MarketListScreen(),
+              routes: [
+                GoRoute(
+                  path: 'market/:id',
+                  builder: (context, state) =>
+                      MarketDetailScreen(id: state.pathParameters['id']!),
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(routes: [
+          GoRoute(path: '/portfolio', builder: (_, __) => const PortfolioScreen()),
+          ],
+        ),
+        StatefulShellBranch(routes: [
+          GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
+          ],
+        ),
+      ],
     ),
   ],
 );
