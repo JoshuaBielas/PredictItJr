@@ -1,0 +1,1 @@
+I only needed to edit three files to add persistence. I just needed a portfolio storage, a startup point in main, and methods that use it in portfolio_model. It is very few files because the others just work with the portfolio model.

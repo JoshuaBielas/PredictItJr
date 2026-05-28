@@ -37,12 +37,9 @@ class MarketDetailBody extends StatelessWidget {
           Text(market.description),
           const SizedBox(height: 24),
           Text('Closes: ${market.closesAt.toLocal().toString().split(' ')[0]}'), 
-          Container(
+          const SizedBox(height: 12),
+          SizedBox(
             height: 160,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8),
-            ),
             child: LineChart(
               LineChartData(
                 minX: 0,
