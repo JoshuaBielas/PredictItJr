@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:predictit_jr/providers/auth_model.dart';
 import 'package:predictit_jr/providers/portfolio_model.dart';
 import 'package:provider/provider.dart';
 
@@ -10,13 +11,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthModel>().currentUser;
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Sign in coming in A7.'),
+            Text('Signed in as ${user?.displayName}'),
             ElevatedButton(
               onPressed: () {
                 showDialog<void>(
@@ -47,8 +49,10 @@ class ProfileScreen extends StatelessWidget {
               },
               child: const Text('Reset Account'),
             ),
-            const ElevatedButton(
-              onPressed: null, 
+            ElevatedButton(
+              onPressed: () async {
+                await context.read<AuthModel>().signOut(); 
+              },  
               child: Text('Sign Out'),
             ),
           ],

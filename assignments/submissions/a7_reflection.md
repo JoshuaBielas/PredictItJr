@@ -1,0 +1,1 @@
+A real world authentication system hashes passwords rather than just storing them in plain text. Token expiry is handled differently. It is stored locally in this system, and it would be stored in a server in a real world system.

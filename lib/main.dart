@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:predictit_jr/providers/auth_model.dart';
 import 'package:provider/provider.dart';
 import 'providers/portfolio_model.dart';
 import 'router.dart';
 import 'theme/app_theme.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final portfolio = PortfolioModel();
-  // I chose to load the portfolio in main before running the app because this causes the information to be there immediately
-  await portfolio.load();
-  runApp(PredictItApp(portfolio: portfolio));
+  final auth = AuthModel();
+  await Future.wait([portfolio.load(), auth.load()]);
+  runApp(PredictItApp(portfolio: portfolio, auth: auth));
 }
 
 class PredictItApp extends StatelessWidget {
-  const PredictItApp({super.key, required this.portfolio});
+  const PredictItApp({
+    super.key,
+    required this.portfolio,
+    required this.auth,
+  });
   final PortfolioModel portfolio;
+  final AuthModel auth;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: portfolio,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PortfolioModel>.value(value: portfolio),
+        ChangeNotifierProvider<AuthModel>.value(value: auth),
+      ],
       child: MaterialApp.router(
         title: 'PredictIt Jr.',
         theme: AppTheme.light,
-        routerConfig: router,
+        routerConfig: buildRouter(auth), // router needs auth — see Step 3
       ),
     );
   }
