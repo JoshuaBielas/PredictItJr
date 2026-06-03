@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:predictit_jr/providers/auth_model.dart';
+import 'package:predictit_jr/services/permission_service.dart';
 import 'package:provider/provider.dart';
 import 'providers/portfolio_model.dart';
 import 'router.dart';
@@ -28,6 +29,7 @@ class PredictItApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<PortfolioModel>.value(value: portfolio),
         ChangeNotifierProvider<AuthModel>.value(value: auth),
+        Provider<PermissionService>(create: (_) => PermissionService()),
       ],
       child: MaterialApp.router(
         title: 'PredictIt Jr.',

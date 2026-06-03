@@ -1,3 +1,7 @@
+import 'dart:math' as math;
+
+// I got help from AI
+
 /// String formatting helpers used across screens.
 ///
 /// Keeping these in one place means UI tweaks (e.g. switching from "42¢" to
@@ -23,10 +27,17 @@ class Formatters {
     return '\$${buf.toString()}.${parts[1]}';
   }
 
-  /// Formats a distance in meters as "0.3 mi" or "120 m".
-  static String distance(double meters) {
+  static String distance(double lat1, double lng1, double lat2, double lng2) {
+    const earthRadiusMeters = 6371000.0;
+    final dLat = _toRadians(lat2 - lat1);
+    final dLng = _toRadians(lng2 - lng1);
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) *
+            math.sin(dLng / 2) * math.sin(dLng / 2);
+    final meters = earthRadiusMeters * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     if (meters < 1000) return '${meters.round()} m';
-    final double miles = meters / 1609.344;
-    return '${miles.toStringAsFixed(1)} mi';
+    return '${(meters / 1609.344).toStringAsFixed(1)} mi';
   }
+
+  static double _toRadians(double d) => d * math.pi / 180.0;
 }

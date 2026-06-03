@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:predictit_jr/screens/create_market_screen.dart';
 import 'providers/auth_model.dart';
 import 'screens/market_list_screen.dart';
 import 'screens/market_detail_screen.dart';
@@ -40,22 +41,30 @@ GoRouter buildRouter(AuthModel auth) {
                       id: state.pathParameters['id']!,
                     ),
                   ),
+                  GoRoute(
+                      path: 'create',
+                      builder: (_, __) => const CreateMarketScreen(),
+                    ),
                 ],
               ),
             ],
           ),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/portfolio',
-              builder: (_, __) => const PortfolioScreen(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: '/profile',
-              builder: (_, __) => const ProfileScreen(),
-            ),
-          ]),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/portfolio',
+                builder: (_, __) => const PortfolioScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (_, __) => const ProfileScreen(),
+              ),
+            ],
+          ),
         ],
       ),
     ],

@@ -12,6 +12,7 @@ class Market {
     required this.priceHistory,
     this.latitude,
     this.longitude,
+    this.imagePath,
   });
 
   final String id;
@@ -25,6 +26,8 @@ class Market {
   final List<PricePoint> priceHistory;
   final double? latitude;
   final double? longitude;
+  // I am storing imagePath as a field because that stores it within the market
+  final String? imagePath;
 
   /// Convenience accessor: NO price is the complement of YES price.
   int get noPriceCents => 100 - yesPriceCents;

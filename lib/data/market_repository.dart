@@ -8,7 +8,12 @@ import '../models/market.dart';
 /// we keep it simple: read once from `assets/data/markets.json`.
 class MarketRepository {
   /// Cached results so we only parse the JSON once per app lifetime.
-  List<Market>? _cached;
+  static List<Market>? _cached;
+
+  Future<void> addMarket(Market market) async {
+    final all = await loadAll();
+    all.insert(0, market);
+  }
 
   Future<List<Market>> loadAll() async {
     if (_cached != null) return _cached!;

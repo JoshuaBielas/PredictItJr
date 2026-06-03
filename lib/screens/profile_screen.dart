@@ -53,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
               onPressed: () async {
                 await context.read<AuthModel>().signOut(); 
               },  
-              child: Text('Sign Out'),
+              child: const Text('Sign Out'),
             ),
           ],
         ),

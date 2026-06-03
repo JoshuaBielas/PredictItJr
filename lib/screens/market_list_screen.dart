@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:predictit_jr/widgets/adaptive_shell.dart';
 import '../data/market_repository.dart';
 import '../models/market.dart';
 import '../widgets/market_card.dart';
 import '../widgets/market_detail.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import '../services/permission_service.dart';
 
 class MarketListScreen extends StatefulWidget {
   const MarketListScreen({super.key});
@@ -14,9 +17,15 @@ class MarketListScreen extends StatefulWidget {
 }
 
 class _WideMarketLayout extends StatefulWidget {
-  const _WideMarketLayout({required this.markets});
+  const _WideMarketLayout({
+    required this.markets,
+    this.userLat,
+    this.userLng,
+  });
 
   final List<Market> markets;
+  final double? userLat;
+  final double? userLng;
 
   @override
   State<_WideMarketLayout> createState() => _WideMarketLayoutState();
@@ -38,6 +47,8 @@ class _WideMarketLayoutState extends State<_WideMarketLayout> {
 
               return MarketCard(
                 market: market,
+                userLat: widget.userLat,
+                userLng: widget.userLng,
                 onTap: () {
                   setState(() {
                     _selectedMarket = market;
@@ -61,11 +72,34 @@ class _WideMarketLayoutState extends State<_WideMarketLayout> {
 
 class _MarketListScreenState extends State<MarketListScreen> {
   late Future<List<Market>> _marketsFuture;
+  Position? _position;
 
   @override
   void initState() {
     super.initState();
     _marketsFuture = MarketRepository().loadAll();
+    _captureListLocation();
+  }
+
+  Future<void> _captureListLocation() async {
+    final svc = context.read<PermissionService>();
+    final outcome = await svc.requestLocation();
+
+    if (outcome != PermissionOutcome.granted) {
+      if (!mounted) return;
+      setState(() => _position = null);
+      return;
+    }
+
+    try {
+      final p = await Geolocator.getCurrentPosition()
+          .timeout(const Duration(seconds: 10));
+      if (!mounted) return;
+      setState(() => _position = p);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _position = null);
+    }
   }
 
   // I got help from AI for this code.
@@ -89,21 +123,43 @@ class _MarketListScreenState extends State<MarketListScreen> {
           return RefreshIndicator(
             onRefresh: () async {
               setState(() {
-                 _marketsFuture = MarketRepository().loadAll();
+                _marketsFuture = MarketRepository().loadAll();
               });
               await _marketsFuture;
             },
             child: wide
-              ? _WideMarketLayout(markets: markets)
-              : ListView.builder(
-                itemCount: markets.length,
-                itemBuilder: (context, i) {
-                  final market = markets[i];
-                  return MarketCard(market: market);
-                },
-            ),
+                ? _WideMarketLayout(
+                  markets: markets,
+                  userLat: _position?.latitude,
+                  userLng: _position?.longitude,
+                )
+                : ListView.builder(
+                    itemCount: markets.length,
+                    itemBuilder: (context, i) {
+                    final market = markets[i];
+                    return MarketCard(
+                      market: market,
+                      userLat: _position?.latitude,
+                      userLng: _position?.longitude,
+                    );
+                  },
+                ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final created = await context.push<bool>('/create');
+
+          if (!mounted) return;
+          if (created == true) {
+            setState(() {
+              _marketsFuture = MarketRepository().loadAll();
+            });
+          }
+        },
+        icon: const Icon(Icons.add),
+        label: const Text('Create'),
       ),
     );
   }
