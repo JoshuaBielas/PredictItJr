@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import '../services/permission_service.dart';
 
 class MarketListScreen extends StatefulWidget {
-  const MarketListScreen({super.key});
+  // const MarketListScreen({super.key});
+  final List<Market>? markets; // optional so real app still works
+  const MarketListScreen({super.key, this.markets});
 
   @override
   State<MarketListScreen> createState() => _MarketListScreenState();
@@ -74,10 +76,18 @@ class _MarketListScreenState extends State<MarketListScreen> {
   late Future<List<Market>> _marketsFuture;
   Position? _position;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _marketsFuture = MarketRepository().loadAll();
+  //   _captureListLocation();
+  // }
   @override
   void initState() {
     super.initState();
-    _marketsFuture = MarketRepository().loadAll();
+    _marketsFuture = widget.markets != null
+        ? Future.value(widget.markets)
+        : MarketRepository().loadAll();
     _captureListLocation();
   }
 

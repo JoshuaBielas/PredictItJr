@@ -19,10 +19,15 @@ class PortfolioScreen extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              Text("Cash"),
               Text(
-                'Cash: ${Formatters.balance(portfolio.cashCents)}',
+                Formatters.balance(portfolio.cashCents),
                 style: const TextStyle(fontSize: 28),
               ),
+              // Text(
+              //   'Cash: ${Formatters.balance(portfolio.cashCents)}',
+              //   style: const TextStyle(fontSize: 28),
+              // ),
               const SizedBox(height: 24),
               if (bets.isEmpty)
                 const Text('No positions yet')
