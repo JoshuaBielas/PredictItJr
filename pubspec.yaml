@@ -34,9 +34,34 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.0
+  flutter_native_splash: ^2.4.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/data/
     - assets/images/
+    - assets/images/predictitjr_icon.png
+
+
+# I got help from AI on this
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/predictitjr_icon.png"  # your source image
+  adaptive_icon_background: "#1a1a2e"           # match your app's brand color
+  adaptive_icon_foreground: "assets/images/predictitjr_icon.png"
+  web:
+    generate: false
+  min_sdk_android: 21
+
+flutter_native_splash:
+  color: "#1a1a2e"              # background color while splash shows
+  image: assets/images/predictitjr_icon.png
+  color_dark: "#1a1a2e"
+  image_dark: assets/images/predictitjr_icon.png
+  android_12:
+    image: assets/images/predictitjr_icon.png
+    color: "#1a1a2e"
+  fullscreen: true

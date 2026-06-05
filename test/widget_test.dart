@@ -52,7 +52,8 @@ class FakeAuthStorage implements AuthStorage {
   Future<void> clear() async {}
 }
 
-Widget _marketListHarness(PortfolioModel model, {List<Market> markets = const [], Size size = const Size(400, 800)}) {
+Widget _marketListHarness(PortfolioModel model,
+    {List<Market> markets = const [], Size size = const Size(400, 800)}) {
   final router = GoRouter(
     routes: [
       GoRoute(
@@ -100,19 +101,20 @@ Widget _betSheetHarness(PortfolioModel model, Market market) {
 }
 
 void main() {
-    testWidgets('app boots to sign in when signed out', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        PredictItApp(
-          portfolio: PortfolioModel(),
-          auth: AuthModel(),
-        ),
-      );
+  testWidgets('app boots to sign in when signed out',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      PredictItApp(
+        portfolio: PortfolioModel(),
+        auth: AuthModel(),
+      ),
+    );
 
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
-      expect(find.text('Sign in'), findsWidgets);
-      expect(find.text('Markets'), findsNothing);
-    });
+    expect(find.text('Sign in'), findsWidgets);
+    expect(find.text('Markets'), findsNothing);
+  });
   // EXTRA CREDIT REFACTOR
   // Before the refactor MarketListscreen loaded markets internally
   // @override
@@ -195,7 +197,9 @@ void main() {
 
     final model = PortfolioModel(storage: FakePortfolioStorage());
 
-    await tester.pumpWidget(_marketListHarness(model, markets: markets, size: const Size(400, 800)));    await tester.pumpAndSettle();
+    await tester.pumpWidget(_marketListHarness(model,
+        markets: markets, size: const Size(400, 800)));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byType(MarketCard).first);
     await tester.pumpAndSettle();
@@ -205,7 +209,8 @@ void main() {
     await tester.binding.setSurfaceSize(null);
   });
 
-  testWidgets('Place bet button is disabled with no side selected', (tester) async {
+  testWidgets('Place bet button is disabled with no side selected',
+      (tester) async {
     final market = Market(
       id: 'mkt_001',
       title: 'question 1?',
@@ -226,7 +231,8 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
-  testWidgets('Place bet button is enabled after selecting a side', (tester) async {
+  testWidgets('Place bet button is enabled after selecting a side',
+      (tester) async {
     final market = Market(
       id: 'mkt_001',
       title: 'question 1?',
@@ -269,20 +275,23 @@ void main() {
     await tester.pumpAndSettle();
 
     // Place a $5 bet (10 shares @ 50¢). Cash should drop to $995.00.
-    model.placeBet(Bet(
-      marketId: 'mkt_001',
-      side: BetSide.yes,
-      shares: 10,
-      pricePaidCents: 50,
-      placedAt: DateTime(2025, 1, 1),
-    ));
+    model.placeBet(
+      Bet(
+        marketId: 'mkt_001',
+        side: BetSide.yes,
+        shares: 10,
+        pricePaidCents: 50,
+        placedAt: DateTime(2025, 1, 1),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text(r'$995.00'), findsOneWidget); // new cash shown
     expect(find.text(r'$1,000.00'), findsNothing); // old cash gone
   });
 
-  testWidgets('placing a bet through the UI updates the portfolio', (tester) async {
+  testWidgets('placing a bet through the UI updates the portfolio',
+      (tester) async {
     final market = Market(
       id: 'mkt_001',
       title: 'question 1?',
@@ -311,7 +320,8 @@ void main() {
     expect(model.cashCents, 100000 - 500);
   });
 
-  testWidgets('signed-out user is redirected from /create to /signin', (tester) async {
+  testWidgets('signed-out user is redirected from /create to /signin',
+      (tester) async {
     final auth = AuthModel(storage: FakeAuthStorage());
     await auth.load();
 

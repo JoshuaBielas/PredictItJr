@@ -33,8 +33,11 @@ class PredictItApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         title: 'PredictIt Jr.',
+        debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
-        routerConfig: buildRouter(auth), // router needs auth — see Step 3
+        darkTheme: AppTheme.dark,        // <- add
+        themeMode: ThemeMode.system,     // <- add
+        routerConfig: buildRouter(auth),
       ),
     );
   }
