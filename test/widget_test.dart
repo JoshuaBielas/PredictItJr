@@ -5,6 +5,7 @@ import 'package:predictit_jr/data/auth_storage.dart';
 import 'package:predictit_jr/main.dart';
 import 'package:predictit_jr/models/market.dart';
 import 'package:predictit_jr/providers/auth_model.dart';
+import 'package:predictit_jr/providers/theme_model.dart';
 import 'package:predictit_jr/router.dart';
 import 'package:predictit_jr/screens/create_market_screen.dart';
 import 'package:predictit_jr/screens/market_detail_screen.dart';
@@ -23,8 +24,11 @@ import 'package:predictit_jr/models/bet.dart';
 
 Widget _portfolioHarness(PortfolioModel model) {
   return MaterialApp(
-    home: ChangeNotifierProvider<PortfolioModel>.value(
-      value: model,
+    home: MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PortfolioModel>.value(value: model),
+        ChangeNotifierProvider<ThemeModel>.value(value: ThemeModel()),
+      ],
       child: const PortfolioScreen(),
     ),
   );
@@ -52,8 +56,11 @@ class FakeAuthStorage implements AuthStorage {
   Future<void> clear() async {}
 }
 
-Widget _marketListHarness(PortfolioModel model,
-    {List<Market> markets = const [], Size size = const Size(400, 800)}) {
+Widget _marketListHarness(
+  PortfolioModel model, {
+  List<Market> markets = const [],
+  Size size = const Size(400, 800),
+}) {
   final router = GoRouter(
     routes: [
       GoRoute(
@@ -75,6 +82,7 @@ Widget _marketListHarness(PortfolioModel model,
     providers: [
       ChangeNotifierProvider<PortfolioModel>.value(value: model),
       Provider<PermissionService>.value(value: FakePermissionService()),
+      ChangeNotifierProvider<ThemeModel>.value(value: ThemeModel()),
     ],
     child: MaterialApp.router(
       routerConfig: router,
@@ -91,6 +99,7 @@ Widget _betSheetHarness(PortfolioModel model, Market market) {
     providers: [
       ChangeNotifierProvider<PortfolioModel>.value(value: model),
       Provider<PermissionService>.value(value: FakePermissionService()),
+      ChangeNotifierProvider<ThemeModel>.value(value: ThemeModel()),
     ],
     child: MaterialApp(
       home: Scaffold(
@@ -107,6 +116,7 @@ void main() {
       PredictItApp(
         portfolio: PortfolioModel(),
         auth: AuthModel(),
+        theme: ThemeModel(),
       ),
     );
 
@@ -197,8 +207,13 @@ void main() {
 
     final model = PortfolioModel(storage: FakePortfolioStorage());
 
-    await tester.pumpWidget(_marketListHarness(model,
-        markets: markets, size: const Size(400, 800)));
+    await tester.pumpWidget(
+      _marketListHarness(
+        model,
+        markets: markets,
+        size: const Size(400, 800),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(MarketCard).first);
@@ -335,6 +350,9 @@ void main() {
             value: PortfolioModel(storage: FakePortfolioStorage()),
           ),
           Provider<PermissionService>.value(value: FakePermissionService()),
+          ChangeNotifierProvider<ThemeModel>.value(
+            value: ThemeModel(),
+          ), // Providing a real ThemeModel
         ],
         child: MaterialApp.router(routerConfig: router),
       ),
